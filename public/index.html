@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoBand+</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%2322c55e'/><path d='M35 50 h30 M50 35 v30' stroke='white' stroke-width='8' stroke-linecap='round'/><path d='M40 65 c5,-10 15,-20 25,-25 s15,5 5,15 s-20,15 -30,10' fill='%2322c55e'/></svg>">
+</head>
+<body>
+    <div id="app">
+        <!-- Landing Page -->
+        <div class="page" id="landing-page">
+            <h1>EcoBand+</h1>
+            <p>The Wearable that Measures your Carbon Karma</p>
+            <p class="subtitle">Gamifying sustainable living with activity recognition, air quality, and temperature data</p>
+            <div class="logo">🌱</div>
+            <button onclick="showPage('signup-page')" class="btn">Sign Up</button>
+            <p class="small">Already have an account? <a href="#" onclick="showPage('login-page')">Log In</a></p>
+        </div>
+
+        <!-- Sign Up Page -->
+        <div class="page hidden" id="signup-page">
+            <h2>Sign Up</h2>
+            <form id="signup-form">
+                <input type="text" name="name" placeholder="Name" required>
+                <input type="email" name="email" placeholder="Email address" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <button type="submit" class="btn">Sign Up</button>
+            </form>
+            <p class="small">Already have an account? <a href="#" onclick="showPage('login-page')">Log In</a></p>
+        </div>
+
+        <!-- Login Page -->
+        <div class="page hidden" id="login-page">
+            <h2>Log In</h2>
+            <form id="login-form">
+                <input type="email" name="email" placeholder="Email address" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <button type="submit" class="btn">Log In</button>
+            </form>
+            <p class="small">Forgot password?</p>
+            <p class="small">Don't have an account? <a href="#" onclick="showPage('signup-page')">Sign Up</a></p>
+        </div>
+
+        <!-- Dashboard Page -->
+        <div class="page hidden" id="dashboard-page">
+           
+            <div class="dashboard-container">
+                <div class="language-selector">
+                    <select id="languageSelect" onchange="changeLanguage(this.value)">
+                        <option value="en">English</option>
+                        <option value="te">తెలుగు</option>
+                    </select>
+                </div>
+                <div class="left-panel">
+                    <div class="score-card" id="green-score-card">
+                        <h2>Green Score</h2>
+                        <div id="green-score" class="score">82</div>
+                        <div class="avatar" id="eco-avatar">😊</div>
+                        <div class="streak">
+                            <span>🔥 Streak</span>
+                            <span id="streak">5</span>
+                        </div>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <h3>Temperature</h3>
+                            <div id="temperature" class="value">22°C</div>
+                        </div>
+                        <div class="metric-card">
+                            <h3>Humidity</h3>
+                            <div id="humidity" class="value">55%</div>
+                        </div>
+                        <div class="metric-card">
+                            <h3>Air Quality</h3>
+                            <div id="air-quality" class="value">Good</div>
+                        </div>
+                    </div>
+                    <button onclick="findMyBand()" id="buzzerBtn" class="btn find-band-btn">Find My Band</button>
+                    <div id="buzzerStatus" class="status">Ready</div>
+                    
+                </div>
+                <div class="right-panel">
+                    <div class="score-info-card">
+                        <h3>Current Status</h3>
+                        <div class="aqi-indicator">
+                            <img src="score-card.png" alt="AQI Level" class="aqi-image">
+                        </div>
+                        <div id="status-label" class="status-label" style="background-color: #22c55e; color: white;">Good</div>
+                        <div id="safety-tips" class="safety-tips">
+                            <h4>Safety Tips</h4>
+                            <ul id="tips-list">
+                                <li>Keep up the great work!</li>
+                                <li>Share your eco-friendly practices with others</li>
+                                <li>Consider setting new environmental goals</li>
+                            </ul>
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+            <nav>
+                <button class="nav-btn active" onclick="showPage('dashboard-page')">🏠</button>
+                <button class="nav-btn" onclick="window.location.href='history.html'">📊</button>
+                <button class="nav-btn" onclick="window.location.href='doc.html'">👨‍⚕️</button>
+                <button class="nav-btn" onclick="showPage('settings-page')">⚙️</button>
+            </nav>
+            
+            <script>
+                // Initialize calendar grid
+                function initializeCalendar() {
+                    const calendarGrid = document.getElementById('calendar-grid');
+                    const today = new Date();
+                    const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+                    
+                    for (let i = 1; i <= daysInMonth; i++) {
+                        const dayBox = document.createElement('div');
+                        dayBox.className = 'calendar-day';
+                        dayBox.textContent = i;
+                        
+                        // Simulate some activity data (replace with actual data later)
+                        if (i <= today.getDate()) {
+                            const hasActivity = Math.random() > 0.3;
+                            if (hasActivity) {
+                                dayBox.classList.add('active-day');
+                            }
+                        } else {
+                            dayBox.classList.add('future-day');
+                        }
+                        
+                        calendarGrid.appendChild(dayBox);
+                    }
+                }
+                
+                // Call the function when the page loads
+                window.addEventListener('load', initializeCalendar);
+            </script>
+            <style>
+                .streak-calendar {
+                    background: rgba(255, 255, 255, 0.1);
+                    border-radius: 15px;
+                    padding: 20px;
+                    margin-top: 20px;
+                }
+                
+                .streak-calendar h3 {
+                    color: #f8f9fa;
+                    margin-bottom: 15px;
+                }
+                
+                .calendar-grid {
+                    display: grid;
+                    grid-template-columns: repeat(7, 1fr);
+                    gap: 5px;
+                }
+                
+                .calendar-day {
+                    aspect-ratio: 1;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: rgba(255, 255, 255, 0.05);
+                    border-radius: 5px;
+                    color: #f8f9fa;
+                    font-size: 0.8rem;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                }
+                
+                .active-day {
+                    background: #22c55e;
+                    color: white;
+                }
+                
+                .future-day {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                }
+            </style>
+        </div>
+
+        <!-- Find Page -->
+        <div class="page hidden" id="find-page">
+            <div class="header">
+                <h2>Find My Band</h2>
+            </div>
+            <div class="find-container">
+                <div class="status-card">
+                    <h3>Band Status</h3>
+                    <div id="buzzerStatus">Ready</div>
+                </div>
+                <button onclick="findMyBand()" id="buzzerBtn" class="btn">Find My Band</button>
+            </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div class="page hidden" id="settings-page">
+            <div class="header">
+                <button onclick="showPage('dashboard-page')" class="back-btn">← Back</button>
+                <h2>Settings</h2>
+            </div>
+            <div class="user-details-card">
+                <h3>User Profile</h3>
+                <div class="user-info">
+                    <div class="info-row">
+                        <span class="label">Name</span>
+                        <span id="user-name" class="value">Loading...</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Email</span>
+                        <span id="user-email" class="value">Loading...</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Member Since</span>
+                        <span id="user-joined" class="value">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <button onclick="logout()" class="btn">Logout</button>
+        </div>
+
+               
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment"></script>
+    <script src="translations.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

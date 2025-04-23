@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Advisory - Air Quality</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #002B36;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .location {
+            color: #3498db;
+            font-size: 1.2em;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background-color: #fff;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #000000;
+        }
+
+        .tab.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        .tab-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .content-section {
+            background-color: #fff;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .risk-level {
+            background-color: #ffd700;
+            color: #333;
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .symptoms {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .recommendations {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+            align-items: flex-start;
+        }
+
+        .condition-icon {
+            width: 30vw;
+            height: 36vh;
+            flex-shrink: 0;
+        }
+
+        .recommendation-content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .do-section, .dont-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .section-content {
+            flex-grow: 1;
+        }
+
+        .do-section h3 {
+            color: #27ae60;
+            margin-bottom: 15px;
+        }
+
+        .dont-section h3 {
+            color: #e74c3c;
+            margin-bottom: 15px;
+        }
+
+        .recommendation-list {
+            list-style: none;
+        }
+
+        .recommendation-list li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+            color: #000000;
+        }
+
+        .do-section .recommendation-list li:before {
+            content: '✓';
+            color: #27ae60;
+            position: absolute;
+            left: 0;
+        }
+
+        .dont-section .recommendation-list li:before {
+            content: '✕';
+            color: #e74c3c;
+            position: absolute;
+            left: 0;
+        }
+
+        @media (max-width: 768px) {
+            .recommendations {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Air Quality Index (AQI) - Live</h1>
+    <div class="widget-container">
+        <div class="widget-box">
+            <div class="city-title">Chittoor</div>
+            <div data-aqi-widget-payload="https://www.aqi.in/widget?p=eyJvX3ciOjEsIm9fd190X3UiOiJjIiwib190IjoibCIsIndfdF9pIjoyLCJscyI6W3sicyI6ImluZGlhL2FuZGhyYS1wcmFkZXNoL2NoaXR0b29yIn1dfQ=="></div>
+        </div>
+        <div class="widget-box">
+            <div class="city-title">Madanapalle</div>
+            <div data-aqi-widget-payload="https://www.aqi.in/widget?p=eyJvX3ciOjEsIm9fd190X3UiOiJjIiwib190IjoibCIsIndfdF9pIjoyLCJscyI6W3sicyI6ImluZGlhL2FuZGhyYS1wcmFkZXNoL21hZGFuYXBhbGxlIn1dfQ=="></div>
+        </div>
+        <div class="widget-box">
+            <div class="city-title">Chennai</div>
+            <div data-aqi-widget-payload="https://www.aqi.in/widget?p=eyJvX3ciOjEsIm9fd190X3UiOiJjIiwib190IjoibCIsIndfdF9pIjoyLCJscyI6W3sicyI6ImluZGlhL2thcm5hdGFrYS9iYW5nYWxvcmUifV19"></div>
+        </div>
+        <div class="widget-box">
+            <div class="city-title">Rayachoti</div>
+            <div data-aqi-widget-payload="https://www.aqi.in/widget?p=eyJvX3ciOjEsIm9fd190X3UiOiJjIiwib190IjoibCIsIndfdF9pIjoyLCJscyI6W3sicyI6ImluZGlhL2FuZGhyYS1wcmFkZXNoL3JheWFjaG90aSJ9XX0="></div>
+        </div>
+        <div class="widget-box">
+            <div class="city-title">Hyderabad</div>
+            <div data-aqi-widget-payload="https://www.aqi.in/widget?p=eyJvX3ciOjEsIm9fd190X3UiOiJjIiwib190IjoibCIsIndfdF9pIjoyLCJscyI6W3sicyI6ImluZGlhL3RlbGFuZ2FuYS9oeWRlcmFiYWQifV19"></div>
+        </div>
+    </div>
+    <!-- AQI Widget Script -->
+    <script src="https://www.aqi.in/scripts/widget.min.js"></script>
+    <div class="container">
+        <header>
+            <h1 style="color: #f8f9fa;">Prevent Health Problems: Understand Your Risks</h1>
+        </header>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="asthma">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnptMCAxOGMtNC40MSAwLTgtMy41OS04LThzMy41OS04IDgtOCA4IDMuNTkgOCA4LTMuNTkgOC04IDh6Ii8+PC9zdmc+" alt="Asthma" class="tab-icon"> Asthma
+            </div>
+            
+            <div class="tab" data-tab="heart">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMTIgMjFuLTEuNDUtMS40NUMxMC41NSAxOS41IDIgMTIuOTUgMiA4LjUgMiA1LjQyIDQuNDIgMyA3LjUgM2MxLjc0IDAgMy40MS44MSA0LjUgMi4wOUMxMy4wOSAzLjgxIDE0Ljc2IDMgMTYuNSAzIDE5LjU4IDMgMjIgNS40MiAyMiA4LjVjMCA0LjQ1LTguNTUgMTEtMTAuNTUgMTIuNTVMMTIgMjF6Ii8+PC9zdmc+" alt="Heart" class="tab-icon"> Heart Issues
+            </div>
+            <div class="tab" data-tab="allergies">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnptMCAxOGMtNC40MSAwLTgtMy41OS04LThzMy41OS04IDgtOCA4IDMuNTkgOCA4LTMuNTkgOC04IDh6Ii8+PC9zdmc+" alt="Allergies" class="tab-icon"> Allergies
+            </div>
+            <div class="tab" data-tab="sinus">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnptMCAxOGMtNC40MSAwLTgtMy41OS04LThzMy41OS04IDgtOCA4IDMuNTkgOCA4LTMuNTkgOC04IDh6Ii8+PC9zdmc+" alt="Sinus" class="tab-icon"> Sinus
+            </div>
+            <div class="tab" data-tab="copd">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnptMCAxOGMtNC40MSAwLTgtMy41OS04LThzMy41OS04IDgtOCA4IDMuNTkgOCA4LTMuNTkgOC04IDh6Ii8+PC9zdmc+" alt="COPD" class="tab-icon"> Chronic (COPD)
+            </div>
+            <div class="tab" data-tab="cold_flu">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnptMCAxOGMtNC40MSAwLTgtMy41OS04LThzMy41OS04IDgtOCA4IDMuNTkgOCA4LTMuNTkgOC04IDh6Ii8+PC9zdmc+" alt="Cold/Flu" class="tab-icon"> Cold/Flu
+            </div>
+        </div>
+
+        <div id="content-container">
+            <!-- Content will be dynamically loaded here -->
+        </div>
+    </div>
+
+    <script>
+        const healthData = {
+            asthma: {
+                title: 'Asthma',
+                risk: 'Mid. when AQI is Moderate (50-150)',
+                symptoms: 'Moderate symptoms including frequent wheezing, noticeable shortness of breath, chest tightness, and persistent cough.',
+                icon: './asthma.png',
+                dos: [
+                    'Limit outdoor activities when AQI is poor.',
+                    'Clean indoor air with an air purifier to reduce exposure.',
+                    'Soothe the respiratory tract with herbal teas or warm water to help alleviate symptoms.'
+                ],
+                donts: [
+                    'Exercise outdoors without a mask.',
+                    'Stay in smoky areas with strong fumes.'
+                ]
+            },
+            heart: {
+                title: 'Heart Issues',
+                risk: 'Mid. when AQI is Moderate (50-150)',
+                symptoms: 'Moderate symptoms like noticeable heart palpitations, increased fatigue, more frequent shortness of breath etc.',
+                icon: './heart.png',
+                dos: [
+                    'Limit time spent outdoors, especially during periods of high pollution.',
+                    'Use air purifiers to maintain good indoor air quality, particularly in bedrooms.',
+                    'Follow a heart-healthy diet low in sodium, saturated fats etc.',
+                    'Monitor blood pressure and heart rate regularly.'
+                ],
+                donts: [
+                    'Skip prescribed medications or make changes to your medication.',
+                    'Ignore signs of discomfort, like chest pain or dizziness.',
+                    'Drink alcohol in excess.'
+                ]
+            },
+            allergies: {
+                title: 'Allergies',
+                risk: 'Mid. when AQI is Moderate (50-150)',
+                symptoms: 'Moderate symptoms including persistent sneezing, more frequent coughing, throat soreness, nasal congestion, and mild chest tightness.',
+                icon: './allergies.jpg',
+                dos: [
+                    'Keep indoor air clean by using air purifiers with HEPA filters to reduce airborne allergens.',
+                    'Drink herbal teas or warm broths to soothe the throat and help reduce nasal congestion.',
+                    'Use a mask when going outside to protect yourself from pollutants and allergens.'
+                ],
+                donts: [
+                    'Ignore indoor allergens as dust, pet dander, and mold.',
+                    'Exercise outdoors without protection.',
+                    'Burn candles or use fireplaces indoors.'
+                ]
+            },
+            sinus: {
+                title: 'Sinus',
+                risk: 'Mid. when AQI is Moderate (50-150)',
+                symptoms: 'Moderate to severe symptoms, such as a runny nose with thick mucus, facial pressure, teeth pain, fever, cough, headache, and tiredness.',
+                icon: './sinus.png',
+                dos: [
+                    'Check the air quality regularly to avoid the exposure.',
+                    'Avoid nasal allergy triggers.',
+                    'Stay indoors and avoid outdoor air pollution exposure.'
+                ],
+                donts: [
+                    'Smoke or expose yourself to outdoor smoke.',
+                    'Avoid exercising or breathing exercises.'
+                ]
+            },
+            copd: {
+                title: 'Chronic (COPD)',
+                risk: 'Mid. when AQI is Moderate (50-150)',
+                symptoms: 'Moderate symptoms including more frequent shortness of breath, persistent cough, increased wheezing, chest tightness, and fatigue.',
+                icon: './chr.png',
+                dos: [
+                    'Use a humidifier to Keep indoor air moist for ease breathing.',
+                    'Drink herbal teas to soothe respiratory passages.',
+                    'Follow your medication regime for COPD symptoms.'
+                ],
+                donts: [
+                    'Smoke or expose yourself to smoke: Avoid any exposure to smoke, including cooking fumes, fire pits, or cigarettes.',
+                    'Skip medications: Do not miss any prescribed medications; they are essential for managing your condition.',
+                    'Engage in strenuous outdoor activities: Avoid heavy physical exertion outdoors, especially during moderate pollution levels.'
+                ]
+            },
+            cold_flu: {
+                title: 'Cold/Flu',
+                risk: 'Mid. when AQI is Moderate (50-150)',
+                symptoms: 'Moderate symptoms including more frequent sneezing, a stuffy or runny nose, cough, mild fever, and body aches.',
+                icon: 'cold.png',
+                dos: [
+                    'Limit outdoor activities, when air quality is poor.',
+                    'Use air purifiers indoors to reduce indoor pollution and allergens.',
+                    'Wear a mask when going outside to protect yourself.'
+                ],
+                donts: [
+                    'Spend extended time outdoors without proper protection when the AQI is elevated.',
+                    'Skip meals; maintain a balanced diet to boost your immune system.',
+                    'Share personal items like towels or utensils with others to prevent the spread of germs.'
+                ]
+            }
+        };
+
+        function createContentSection(data) {
+            return `
+                <div class="content-section active">
+                    <h2>${data.title}</h2>
+                    <div class="risk-level">Risk of ${data.title} symptoms is ${data.risk}</div>
+                    <p class="symptoms">${data.symptoms}</p>
+                    
+                    <div class="recommendations">
+                        <img src="${data.icon}" alt="${data.title}" class="condition-icon">
+                        <div class="recommendation-content">
+                            <div class="do-section">
+                                <div class="section-content">
+                                    <h3>Do's :</h3>
+                                    <ul class="recommendation-list">
+                                        ${data.dos.map(item => `<li>${item}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="dont-section">
+                                <div class="section-content">
+                                    <h3>Don'ts :</h3>
+                                    <ul class="recommendation-list">
+                                        ${data.donts.map(item => `<li>${item}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Initial content load
+        document.getElementById('content-container').innerHTML = createContentSection(healthData.asthma);
+
+        // Tab switching functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Update active tab
+                document.querySelector('.tab.active').classList.remove('active');
+                tab.classList.add('active');
+
+                // Update content
+                const condition = tab.getAttribute('data-tab');
+                document.getElementById('content-container').innerHTML = createContentSection(healthData[condition]);
+            });
+        });
+    </script>
+</body>
+</html>

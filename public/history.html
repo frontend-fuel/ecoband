@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ecoband+ Graphs</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #002B36;
+      color: #ffffff;
+    }
+
+    header {
+      background-color: #003e47;
+      color: #ffffff;
+      padding: 15px;
+      text-align: center;
+      font-size: 24px;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 15px auto;
+      padding: 20px;
+      background-color: #013440;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .back-btn {
+      position: absolute;
+      left: 20px;
+      background: none;
+      border: none;
+      color: #ffffff;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      transform: translateX(-3px);
+      opacity: 0.8;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 20px;
+      background-color: #013440;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .time-range {
+      display: flex;
+      gap: 10px;
+    }
+
+    .time-btn {
+      padding: 8px 16px;
+      border: none;
+      background-color: #012d35;
+      color: #c2fbd7;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .time-btn.active {
+      background-color: #00FFCC;
+      color: #002B36;
+    }
+
+    .time-btn:hover {
+      background-color: #00FFCC88;
+    }
+
+    .export-btn {
+      padding: 8px 16px;
+      border: none;
+      background-color: #00C49F;
+      color: #002B36;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .export-btn:hover {
+      background-color: #00C49F88;
+    }
+
+    .chart-section {
+      margin-bottom: 40px;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 400px !important;
+      background-color: #012d35;
+      border-radius: 10px;
+      padding: 15px;
+    }
+
+    h2 {
+      color: #c2fbd7;
+      font-size: 20px;
+      margin-bottom: 10px;
+      border-left: 5px solid #00FFCC;
+      padding-left: 10px;
+    }
+
+    .loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 43, 54, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #013440;
+      border-top: 5px solid #00FFCC;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .error {
+      color: #ff6b6b;
+      text-align: center;
+      padding: 20px;
+      background-color: #012d35;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="back-btn">← Back to Dashboard</a>
+    🌿 Ecoband+ Monitoring Dashboard
+  </header>
+
+  <div class="container">
+    <div class="controls">
+      <div class="time-range">
+        <button class="time-btn active" data-range="50">Last 50</button>
+        <button class="time-btn" data-range="100">Last 100</button>
+        <button class="time-btn" data-range="200">Last 200</button>
+      </div>
+      <button class="export-btn" onclick="exportData()">Export Data</button>
+    </div>
+
+    <div class="chart-section">
+      <h2>Air Quality</h2>
+      <canvas id="airQualityChart"></canvas>
+    </div>
+    <div class="chart-section">
+      <h2>Temperature</h2>
+      <canvas id="temperatureChart"></canvas>
+    </div>
+    <div class="chart-section">
+      <h2>Humidity</h2>
+      <canvas id="humidityChart"></canvas>
+    </div>
+  </div>
+
+  <script>
+    const CHANNEL_ID = "2928017";
+    const READ_API_KEY = "4VPCWH5REJ3RN21T";
+    let currentRange = 50;
+    const charts = {};
+
+    async function fetchData(field) {
+      const url = `https://api.thingspeak.com/channels/${CHANNEL_ID}/fields/${field}.json?api_key=${READ_API_KEY}&results=${currentRange}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      const labels = data.feeds.map(feed => new Date(feed.created_at).toLocaleTimeString());
+      const values = data.feeds.map(feed => {
+        const val = feed[`field${field}`];
+        return val !== null ? parseFloat(val) : null;
+      });
+      return { labels, values };
+    }
+
+    async function drawChart(field, label, color, canvasId) {
+      const { labels, values } = await fetchData(field);
+      const ctx = document.getElementById(canvasId).getContext("2d");
+
+      if (charts[canvasId]) {
+        charts[canvasId].destroy();
+      }
+
+      charts[canvasId] = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: label,
+            data: values,
+            borderColor: color,
+            backgroundColor: color + "33",
+            fill: false,
+            tension: 0,
+            pointRadius: 3,
+            borderWidth: 2,
+            spanGaps: true
+          }]
+        },
+        options: {
+          responsive: true,
+          layout: {
+            padding: {
+              left: 10,
+              right: 10,
+              top: 5,
+              bottom: 5
+            }
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: { mode: 'index', intersect: false }
+          },
+          interaction: {
+            mode: 'nearest',
+            axis: 'x',
+            intersect: false
+          },
+          scales: {
+            x: {
+              title: { display: true, text: 'Time', color: '#ccc' },
+              ticks: { color: '#aaa' }
+            },
+            y: {
+              title: { display: true, text: label, color: '#ccc' },
+              ticks: { color: '#aaa' }
+            }
+          }
+        }
+      });
+    }
+
+    // Time range buttons functionality
+    document.querySelectorAll('.time-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentRange = parseInt(btn.dataset.range);
+        await refreshCharts();
+      });
+    });
+
+    async function refreshCharts() {
+      try {
+        await Promise.all([
+          drawChart(1, "Air Quality", "#00C49F", "airQualityChart"),
+          drawChart(2, "Temperature (°C)", "#FFBB28", "temperatureChart"),
+          drawChart(3, "Humidity (%)", "#8884d8", "humidityChart")
+        ]);
+      } catch (error) {
+        console.error('Error refreshing charts:', error);
+      }
+    }
+
+    function exportData() {
+      const data = {
+        timestamp: new Date().toISOString(),
+        charts: Object.entries(charts).map(([id, chart]) => ({
+          name: id,
+          data: {
+            labels: chart.data.labels,
+            values: chart.data.datasets[0].data
+          }
+        }))
+      };
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      saveAs(blob, `ecoband-data-${new Date().toISOString().split('T')[0]}.json`);
+    }
+
+    // Initial chart render
+    refreshCharts();
+  </script>
+</body>
+</html>
