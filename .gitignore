@@ -1,0 +1,8 @@
+.env
+node_modules/
+.DS_Store
+*.log
+.vscode/
+.idea/
+# Ignore Twilio credentials
+routes/twilio.js
