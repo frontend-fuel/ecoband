@@ -24,8 +24,8 @@
         }
     ],
     "env": {
-        "MONGODB_URI": "mongodb+srv://sasi:sasi123@cluster0.yikiejk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
-        "JWT_SECRET": "d8e015a7f9b2c4e6a3d1b8f5e9c7m4k2",
+        "MONGODB_URI": "@mongodb_uri",
+        "JWT_SECRET": "@jwt_secret",
         "PORT": "3000"
     }
 }
