@@ -25,7 +25,6 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ecoband',
 // Routes
 app.use('/api/users', require('./routes/users'));
 app.use('/api/metrics', require('./routes/metrics'));
-app.use('/api/twilio', require('./routes/twilio'));
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));

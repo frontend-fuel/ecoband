@@ -464,18 +464,7 @@ function toggleMetric(metric) {
 
 function checkGreenScore(score) {
     if (score < 20) {
-        // Make a call using Twilio API
-        const phoneNumber = '+919391502293'; // Include country code
-        fetch('/api/twilio/call', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ phoneNumber })
-        })
-        .then(response => response.json())
-        .then(data => console.log('Twilio call initiated:', data))
-        .catch(error => console.error('Error making Twilio call:', error));
+        console.log('Green score is critically low:', score);
     }
 }
 
